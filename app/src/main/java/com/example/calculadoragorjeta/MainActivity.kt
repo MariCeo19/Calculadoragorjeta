@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -24,10 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.calculadoragorjeta.ui.theme.CalculadoragorjetaTheme
+import java.text.NumberFormat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,47 +51,72 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun Calculadora() {
-    var valorentrada by remember { mutableStateOf("") }
+fun Calculadora(){
+
+    var valorEntrada by remember { mutableStateOf("") }
+    var gorjeta by remember { mutableStateOf(0.0) }
+    var percentagemGorjeta by remember { mutableStateOf("" ) }
+
+    gorjeta = CalcularGorjeta(valorEntrada,percentagemGorjeta)
 
     Surface (
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
-    ){
+            )
+    {
     }
 
     Column(
     verticalArrangement = Arrangement.Top,
     horizontalAlignment = Alignment.CenterHorizontally,
-    modifier = Modifier
-        .fillMaxSize()
+    modifier = Modifier.fillMaxSize()
 
-) {
+          )
+    {
 
      Text(
-      text = "Calculadora de Gorjeta",
-      fontSize = 30.sp,
-      fontWeight = FontWeight.SemiBold,
-      modifier = Modifier
+         text = "Calculadora de Gorjeta",
+         fontSize = 30.sp,
+         fontWeight = FontWeight.SemiBold,
+         modifier = Modifier
           .padding(top = 40.dp)
-  )
+         )
      TextField(
-      value = valorentrada ,
+         value = valorEntrada,
          label = {
+             Text(
+                 text = "Valor da entrada" )
+                 },
+         onValueChange = {valorEntrada = it},
+         modifier = Modifier
+          .padding(top = 30.dp),
+         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+
+         TextField(
+             value = valorEntrada,
+             label = {
                  Text(
-                     text = "Valor da entrada" )
-         },
-      onValueChange = {valorentrada = it },
-      modifier = Modifier
-          .padding(top = 30.dp)
-  )
-     Text(
-         text = "Valor da Gorjeta:",
+                     text = "Percentagem da Gorjeta" )
+             },
+             onValueChange = {valorEntrada = it},
+             modifier = Modifier
+                 .padding(top = 30.dp),
+             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+
+         ) ,
+         Text(
+          text = "Valor da Gorjeta ${NumberFormat.getCurrencyInstance().format(gorjeta)}",
          fontSize = 25.sp,
          fontWeight = FontWeight.Normal,
          modifier = Modifier
-             .padding(top = 30.dp)
-     )
-
+             .padding(top = 30.dp),
+            )
     }
+}
+
+fun CalcularGorjeta (
+    valorEntrada: String,
+    percentagemGorjeta: String
+):Double{
+     return  (valorEntrada.toDoubleOrNull()?:0.0)*(percentagemGorjeta.toDoubleOrNull()?:0.0)/100
 }
