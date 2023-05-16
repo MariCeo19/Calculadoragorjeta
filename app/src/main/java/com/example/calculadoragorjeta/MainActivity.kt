@@ -5,13 +5,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -56,10 +62,11 @@ fun Calculadora(){
     var valorEntrada by remember { mutableStateOf("") }
     var gorjeta = 0.0
     var percentagemGorjeta by remember { mutableStateOf("" ) }
+    var arredondar by remember { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
 
-    gorjeta = CalcularGorjeta(valorEntrada,percentagemGorjeta)
+    gorjeta = CalcularGorjeta(valorEntrada,percentagemGorjeta,arredondar)
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -70,8 +77,9 @@ fun Calculadora(){
     Column(
     verticalArrangement = Arrangement.Top,
     horizontalAlignment = Alignment.CenterHorizontally,
-
-    modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(30.dp)
           )
     {
      Text(
@@ -99,6 +107,25 @@ fun Calculadora(){
                 onNext = {focusManager.clearFocus() }
             )
         )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(48.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+        Text(
+            text ="Arredondar",
+            fontSize = 20.sp
+        )
+            Switch(
+                checked = true,
+                onCheckedChange = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.End)
+            )
+    }
+        
      Text(
           text = "Valor da Gorjeta ${NumberFormat.getCurrencyInstance().format(gorjeta)}",
          fontSize = 25.sp,
@@ -133,7 +160,15 @@ fun CampoTextoEditavel (
 
 fun CalcularGorjeta (
     valorEntrada: String,
-    percentagemGorjeta: String
+    percentagemGorjeta: String,
+    arredondar:Boolean
 ):Double{
+var gorjeta =  (valorEntrada.toDoubleOrNull()?:0.0)*(percentagemGorjeta.toDoubleOrNull()?:0.0)/100
+    if (arredondar==true){
+        gorjeta = kotlin.math.ceil(gorjeta)
+    }
+
+     return gorjeta
+
      return  (valorEntrada.toDoubleOrNull()?:0.0)*(percentagemGorjeta.toDoubleOrNull()?:0.0)/100
 }
