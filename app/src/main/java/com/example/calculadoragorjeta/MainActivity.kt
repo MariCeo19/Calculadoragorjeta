@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.calculadoragorjeta.ui.theme.CalculadoragorjetaTheme
 import java.text.NumberFormat
+import kotlin.math.round
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,8 +119,8 @@ fun Calculadora(){
             fontSize = 20.sp
         )
             Switch(
-                checked = true,
-                onCheckedChange = {},
+                checked = arredondar,
+                onCheckedChange = {arredondar=it},
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentWidth(Alignment.End)
